@@ -1,239 +1,161 @@
-# 🛒 Mini E-commerce — Desafio Técnico
+# 🛒 Mini E-commerce
 
-Este projeto implementa um **mini e-commerce** com backend em **Node.js/Express/Sequelize** e frontend em **React + Vite + TypeScript**.  
-Foi desenvolvido em etapas, seguindo boas práticas de commits, validação e arquitetura.
+> Full-stack e-commerce application with authentication, product management, shopping cart, and AWS S3 integration.
 
----
-
-## Q&A das perguntas técnicas
-
-[Perguntas & Respostas](ANSWERS.md)
+This project is a complete mini e-commerce platform built to demonstrate real-world full-stack development skills, including authentication, REST APIs, cloud storage, and modern frontend architecture.
 
 ---
 
-## 📂 Estrutura
+## 🌎 About the Project
 
-```
-/backend   → API (Node/Express/Sequelize/SQLite)
-/frontend  → SPA (React/Vite/TS)
-```
+This application was originally developed as a technical challenge and later improved into a portfolio project, focusing on scalability, clean architecture, and production-ready features.
 
 ---
 
-# 🚀 Backend
+## 📂 Project Structure
 
-### ⚙️ Requisitos
-
-- Node.js LTS (≥ 22.x recomendado)
-- npm ou yarn
-- SQLite (não precisa instalar cliente; usa arquivo `.sqlite`)
-
-### 🔧 Configuração
-
-1. Acesse a pasta:
-   ```bash
-   cd backend
-   ```
-2. Instale dependências:
-   ```bash
-   npm install
-   ```
-3. Configure variáveis de ambiente em `.env.example` e renomeie para `.env`:
-
-   ```env
-   PORT=4000
-   JWT_SECRET=seuSegredoAqui
-   CORS_ORIGIN=http://localhost:5173
-
-   # AWS S3
-   AWS_ACCESS_KEY_ID=SUACHAVE
-   AWS_SECRET_ACCESS_KEY=SUASECRET
-   AWS_REGION=sua-regiao (us-east-1 || us-east-2)
-   S3_BUCKET=nome-do-bucket
-   S3_PUBLIC_BASE=https://nome-do-bucket.s3.amazonaws.com
-   ```
-
-4. Execute as migrations + seeders:
-   ```bash
-   npm run db:migrate
-   npm run db:seed
-   ```
-5. Inicie o servidor:
-   ```bash
-   npm run dev
-   ```
-   API rodará em: [http://localhost:4000/api](http://localhost:4000/api)
+/backend   → API (Node.js, Express, Sequelize, SQLite)
+/frontend  → SPA (React, Vite, TypeScript)
 
 ---
 
-### 📌 Endpoints obrigatórios
+## 🚀 Features
 
-#### Auth
+### 🔐 Authentication
+- User registration and login
+- JWT-based authentication
+- Protected routes
 
-- `POST /api/auth/register` → cria usuário (`name`, `email`, `password`)
-- `POST /api/auth/login` → autentica, retorna JWT
+### 🛍️ Products
+- Paginated product listing
+- Search by name or code
+- Product image upload via AWS S3
 
-#### Products
+### 🛒 Shopping Cart
+- Add products to cart
+- Update quantities
+- Remove items
+- Cart total calculation
 
-- `GET /api/products?page=1&limit=12` → lista produtos (pagina)
-- `GET /api/products/search?q=termo` → busca por código ou nome
-
-#### Cart (JWT necessário)
-
-- `GET /api/cart` → lista itens do carrinho do usuário
-- `POST /api/cart` → adiciona produto  
-  body: `{ "product_id": 1, "quantity": 2 }`
-- `PUT /api/cart/:id` → atualiza quantidade
-- `DELETE /api/cart/:id` → remove item
-
-#### AWS
-
-- `POST /api/products/:id/image/sign` → gera URL pré-assinada de upload
-- `PATCH /api/products/:id/image` → salva `image_url` no produto
-- (opcional privado) `GET /api/products/image/sign-view?key=...` → gera URL pré-assinada de leitura
+### ☁️ Cloud Integration
+- Secure image upload using AWS S3 pre-signed URLs
 
 ---
 
-### 🔒 Requisitos técnicos atendidos
+## 🛠️ Tech Stack
 
-- Middleware JWT
-- Validação (`express-validator`)
-- Senhas criptografadas (`bcrypt`)
-- Tratamento de erros centralizado
-- Respostas JSON padronizadas `{ ok:true, data } | { ok:false, error }`
-- CORS configurado via `.env`
+### Backend
+- Node.js
+- Express
+- Sequelize
+- SQLite
+- JWT
+- bcrypt
+- express-validator
 
----
+### Frontend
+- React
+- Vite
+- TypeScript
 
-# 💻 Frontend
-
-### ⚙️ Requisitos
-
-- Node.js LTS (≥ 22.x recomendado)
-- npm ou yarn
-
-### 🔧 Configuração
-
-1. Acesse a pasta:
-   ```bash
-   cd frontend
-   ```
-2. Instale dependências:
-   ```bash
-   npm install
-   ```
-3. Configure variáveis de ambiente em `.env.example` e renomeie para `.env`:
-   ```env
-   VITE_API_URL=http://localhost:4000/api
-   ```
-4. Inicie:
-   ```bash
-   npm run dev
-   ```
-   App rodará em: [http://localhost:5173](http://localhost:5173)
+### Cloud
+- AWS S3 (pre-signed upload URLs)
 
 ---
 
-### 📌 Funcionalidades do frontend
+## 📦 Getting Started
 
-- **Login / Registro**
-
-  - Formulários validados (`required`, `minLength`, `email`)
-  - JWT armazenado em `localStorage`
-  - Logout automático em 401
-
-- **Produtos**
-  - Listagem paginada
-  - Busca por código/nome
-  - Upload de imagem para S3
-- **Carrinho**
-  - Adicionar item
-  - Listar itens
-  - Atualizar quantidade
-  - Remover item
-  - Total exibido
+### Prerequisites
+- Node.js (LTS)
+- npm or yarn
 
 ---
 
-# ☁️ AWS S3
+### 🔧 Backend Setup
 
-### Passos
+cd backend
+npm install
 
-1. Criar bucket no S3 (`us-east-1` ou `us-east-2`).
-2. Configurar **CORS** do bucket:
-   ```json
-   [
-     {
-       "AllowedHeaders": ["*"],
-       "AllowedMethods": ["GET", "PUT"],
-       "AllowedOrigins": ["http://localhost:5173"],
-       "ExposeHeaders": ["ETag"],
-       "MaxAgeSeconds": 3000
-     }
-   ]
-   ```
-3. Ajustar **Bucket Policy** se quiser leitura pública:
-   ```json
-   {
-     "Version": "2012-10-17",
-     "Statement": [
-       {
-         "Effect": "Allow",
-         "Principal": "*",
-         "Action": "s3:GetObject",
-         "Resource": "arn:aws:s3:::NOME-DO-BUCKET/*"
-       }
-     ]
-   }
-   ```
-4. No frontend, ao enviar imagem:
-   - Chama `POST /api/products/:id/image/sign` para pegar `uploadUrl` + `fileUrl`.
-   - Faz `PUT` direto no S3 com o arquivo.
-   - Chama `PATCH /api/products/:id/image` para salvar `image_url` no produto.
+Create a .env file:
+
+PORT=4000
+JWT_SECRET=yourSecret
+CORS_ORIGIN=http://localhost:5173
+
+AWS_ACCESS_KEY_ID=yourKey
+AWS_SECRET_ACCESS_KEY=yourSecret
+AWS_REGION=us-east-1
+S3_BUCKET=your-bucket
+S3_PUBLIC_BASE=https://your-bucket.s3.amazonaws.com
+
+Run migrations and seeders:
+
+npm run db:migrate
+npm run db:seed
+
+Start server:
+
+npm run dev
+
+API runs at: http://localhost:4000/api
 
 ---
 
-# 🧪 Testes rápidos
+### 💻 Frontend Setup
 
-### Usuário
+cd frontend
+npm install
 
-```bash
-curl -X POST http://localhost:4000/api/auth/register  -H "Content-Type: application/json"  -d '{"name":"Ana","email":"ana@ex.com","password":"123456"}'
-```
+Create .env:
 
-### Login
+VITE_API_URL=http://localhost:4000/api
 
-```bash
-curl -X POST http://localhost:4000/api/auth/login  -H "Content-Type: application/json"  -d '{"email":"ana@ex.com","password":"123456"}'
-```
+Run app:
 
-### Produtos
+npm run dev
 
-```bash
-curl http://localhost:4000/api/products
-```
-
-### Carrinho
-
-```bash
-curl -X POST http://localhost:4000/api/cart  -H "Authorization: Bearer TOKEN"  -H "Content-Type: application/json"  -d '{"product_id":1,"quantity":2}'
-```
+App runs at: http://localhost:5173
 
 ---
 
-# ✅ Checklist
+## 🔌 API Overview
 
-- [x] Endpoints obrigatórios
-- [x] JWT auth + middleware
-- [x] Validação básica
-- [x] Senhas com bcrypt
-- [x] Erros tratados
-- [x] JSON padronizado
-- [x] CORS configurado
-- [x] Fluxo usuário (login → produtos → carrinho)
-- [x] Commits organizados por etapa
-- [x] Upload para AWS S3
+### Auth
+POST /api/auth/register  
+POST /api/auth/login  
+
+### Products
+GET /api/products  
+GET /api/products/search  
+
+### Cart (JWT required)
+GET /api/cart  
+POST /api/cart  
+PUT /api/cart/:id  
+DELETE /api/cart/:id  
+
+### AWS S3
+POST /api/products/:id/image/sign  
+PATCH /api/products/:id/image  
 
 ---
 
-👨‍💻 Desenvolvido por **Ricardo Silva**
+## 🔒 Technical Highlights
+
+- JWT authentication & middleware
+- Input validation with express-validator
+- Password hashing with bcrypt
+- Centralized error handling
+- Standardized API responses
+- CORS configuration via environment variables
+- AWS S3 integration with pre-signed URLs
+
+---
+
+## 📌 Notes
+
+This project focuses on simulating a real-world e-commerce flow, including authentication, product browsing, and cart management.
+
+---
+
+👨‍💻 Built by Ricardo Silva
