@@ -81,7 +81,6 @@ Create a .env file:
 PORT=4000
 JWT_SECRET=yourSecret
 CORS_ORIGIN=http://localhost:5173
-
 AWS_ACCESS_KEY_ID=yourKey
 AWS_SECRET_ACCESS_KEY=yourSecret
 AWS_REGION=us-east-1
