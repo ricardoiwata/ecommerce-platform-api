@@ -72,12 +72,13 @@ This application was originally developed as a technical challenge and later imp
 ---
 
 ### 🔧 Backend Setup
-
+```bash
 cd backend
 npm install
+```
 
 Create a .env file:
-
+```.env
 PORT=4000
 JWT_SECRET=yourSecret
 CORS_ORIGIN=http://localhost:5173
@@ -86,16 +87,17 @@ AWS_SECRET_ACCESS_KEY=yourSecret
 AWS_REGION=us-east-1
 S3_BUCKET=your-bucket
 S3_PUBLIC_BASE=https://your-bucket.s3.amazonaws.com
+```
 
 Run migrations and seeders:
-
+```
 npm run db:migrate
 npm run db:seed
-
+```
 Start server:
-
+```
 npm run dev
-
+```
 API runs at: http://localhost:4000/api
 
 ---
@@ -103,16 +105,17 @@ API runs at: http://localhost:4000/api
 ### 💻 Frontend Setup
 
 cd frontend
+```bash
 npm install
-
+```
 Create .env:
-
+```.env
 VITE_API_URL=http://localhost:4000/api
-
+```
 Run app:
-
+```bash
 npm run dev
-
+```
 App runs at: http://localhost:5173
 
 ---
